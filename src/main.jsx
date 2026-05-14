@@ -154,22 +154,21 @@ function HoleMap({ hole, course, full = false }) {
   useEffect(() => {
     if (!el.current) return;
     if (map.current) { map.current.remove(); map.current = null; }
-    const center = full ? [course.gps.lat, course.gps.lng] : [hole.gps.lat, hole.gps.lng];
-    const zoom   = full ? course.gps.zoom : (hole.gps.zoom || 16);
-    const m = L.map(el.current, { center, zoom, scrollWheelZoom: false });
-    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: "© Esri", maxZoom: 20 }).addTo(m);
-    if (!full) {
-      L.circleMarker([hole.gps.lat - 0.0006, hole.gps.lng], { radius: 7, fillColor: "#eab308", fillOpacity: 1, color: "#fff", weight: 2 }).addTo(m).bindTooltip("Abschlag");
-      L.circleMarker([hole.gps.lat, hole.gps.lng], { radius: 10, fillColor: "#1a5c3a", fillOpacity: 1, color: "#fff", weight: 2 }).addTo(m).bindTooltip("Grün");
-    } else {
-      (course.holes || []).forEach(h => {
-        L.circleMarker([h.gps.lat, h.gps.lng], { radius: h.n === hole.n ? 12 : 8, fillColor: h.n === hole.n ? "#1a5c3a" : "#fff", fillOpacity: 0.95, color: "#1a5c3a", weight: h.n === hole.n ? 3 : 2 }).addTo(m).bindTooltip(`Bahn ${h.n} · Par ${h.par}`);
-      });
-    }
+    // Immer Platzzentrum – keine gefakten Einzel-Bahn-Koordinaten
+    const center = [course.gps.lat, course.gps.lng];
+    const zoom   = full ? course.gps.zoom : 15;
+    const m = L.map(el.current, { center, zoom, scrollWheelZoom: true });
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: "© Esri World Imagery", maxZoom: 20 }).addTo(m);
+    L.circleMarker(center, { radius: 10, fillColor: "#1a5c3a", fillOpacity: 0.9, color: "#fff", weight: 2 }).addTo(m).bindTooltip("Gut Kuhlendahl");
     map.current = m;
     return () => { map.current?.remove(); map.current = null; };
   }, [hole?.n, full, course?.gps?.lat]);
-  return <div style={{ position: "relative", height: "100%" }}><div ref={el} style={{ height: "100%", width: "100%" }} /><div className="map-note">GPS = Näherungswerte · kalibrieren</div></div>;
+  return (
+    <div style={{ position: "relative", height: "100%" }}>
+      <div ref={el} style={{ height: "100%", width: "100%" }} />
+      <div className="map-note">Satellit · Scroll zum Zoomen · Bahn-GPS folgt vor Ort</div>
+    </div>
+  );
 }
 
 // ── Per-hole SVG ──────────────────────────────────────
