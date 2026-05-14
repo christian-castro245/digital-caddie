@@ -308,12 +308,11 @@ function HomeView({ player, currentRound, roundHistory, activeCourse, onStart, o
 
 // ── CourseSearchView ──────────────────────────────────
 function CourseSearchView({ onSelect, onBack }) {
-  const [query,   setQuery]   = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState(null);
+  const [query,     setQuery]     = useState("");
+  const [results,   setResults]   = useState([]);
+  const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState(null);
   const [loadingId, setLoadingId] = useState(null);
-  const apiKeySet = !!import.meta.env.VITE_GOLF_API_KEY;
 
   async function doSearch() {
     if (!query.trim()) return;
@@ -337,27 +336,13 @@ function CourseSearchView({ onSelect, onBack }) {
         <div className="course-sub">GolfCourseAPI · ~30.000 Plätze</div>
       </div>
 
-      {!apiKeySet && (
-        <div className="api-warning">
-          <AlertCircle size={18} />
-          <div>
-            <div style={{ fontWeight: 600, marginBottom: 4 }}>API-Key fehlt</div>
-            <div style={{ fontSize: 12, lineHeight: 1.5 }}>
-              Erstelle <code>.env.local</code> im Projektordner:<br />
-              <code>VITE_GOLF_API_KEY=dein_key</code><br />
-              Dann <code>npm run dev</code> neu starten.
-            </div>
-          </div>
-        </div>
-      )}
-
       <div style={{ padding: "14px 16px 0" }}>
         <div className="search-row">
           <input className="search-input" value={query} onChange={e => setQuery(e.target.value)}
             placeholder="z.B. Velbert, Kuhlendahl, München…"
             onKeyDown={e => e.key === "Enter" && doSearch()} />
           {query && <button className="search-clear" onClick={() => { setQuery(""); setResults([]); }}><X size={16} /></button>}
-          <button className="search-btn" onClick={doSearch} disabled={loading || !apiKeySet}>
+          <button className="search-btn" onClick={doSearch} disabled={loading}>
             {loading ? <Loader size={18} className="spin" /> : <Search size={18} />}
           </button>
         </div>
