@@ -1,6 +1,6 @@
 {
   "name": "kuhlendahl-mvp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,8 @@
     "react": "latest",
     "react-dom": "latest",
     "lucide-react": "latest",
-    "framer-motion": "latest"
+    "framer-motion": "latest",
+    "leaflet": "^1.9.4"
   },
   "devDependencies": {}
 }
